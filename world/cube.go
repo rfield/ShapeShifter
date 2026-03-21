@@ -14,6 +14,7 @@ type Cube struct {
 	Height     float32
 	Length     float32
 	Color      color.RGBA
+	IsSolid    bool
 	IsSelected bool
 }
 
@@ -26,13 +27,18 @@ func NewCube(positionX, positionY, positionZ, width, height, length float32, col
 		Height:     height,
 		Length:     length,
 		Color:      color,
+		IsSolid:    false,
 		IsSelected: false,
 	}
 }
 
 func (c *Cube) Draw() {
 	position := rl.NewVector3(c.PositionX, c.PositionY, c.PositionZ)
-	rl.DrawCubeWires(position, c.Width, c.Height, c.Length, c.Color)
+	if c.IsSolid {
+		rl.DrawCube(position, c.Width, c.Height, c.Length, c.Color)
+	} else {
+		rl.DrawCubeWires(position, c.Width, c.Height, c.Length, c.Color)
+	}
 }
 
 func (c *Cube) GetBoundingBox() (min, max rl.Vector3) {

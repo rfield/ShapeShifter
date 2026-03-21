@@ -16,3 +16,8 @@ func init() {
 func GetInstance() *rl.Camera3D {
 	return &camera
 }
+
+func update() {
+	// You can update camera movement here if needed. Raylib provides UpdateCamera()
+	// rl.UpdateCamera(&camera, rl.CameraFirstPerson) // Update camera (simply update camera position and rotation)
+}

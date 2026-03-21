@@ -1,4 +1,4 @@
-# ShapeShifter 
+# ShapeShifter
 
 This is an application demonstrating interactive computer graphics, using the Raylib graphics library and Go.
 
