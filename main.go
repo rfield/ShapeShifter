@@ -1,7 +1,9 @@
 package main
 
 import (
-	raylib "github.com/gen2brain/raylib-go/raylib"
+	rl "github.com/gen2brain/raylib-go/raylib"
+	"rjfield.com/graphics/camera"
+	"rjfield.com/graphics/world"
 )
 
 func main() {
@@ -9,80 +11,161 @@ func main() {
 	screenWidth := int32(800)
 	screenHeight := int32(450)
 
-	raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d cube in Go")
+	rl.InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d cube in Go")
 
-	// Define the camera to look into our 3D world
-	camera := raylib.Camera3D{}
-	camera.Position = raylib.NewVector3(10.0, 10.0, 10.0) // Camera position
-	camera.Target = raylib.NewVector3(0.0, 0.0, 0.0)      // Camera looking at point
-	camera.Up = raylib.NewVector3(0.0, 1.0, 0.0)          // Camera up vector (rotation towards target)
-	camera.Fovy = 45.0                                    // Camera field-of-view Y
-	camera.Projection = raylib.CameraPerspective          // Camera projection type
+	// Define the cameraRef to look into our 3D world
+	cameraRef := camera.GetInstance()
+	// camera := rl.Camera3D{}
+	// camera.Position = rl.NewVector3(10.0, 10.0, 10.0) // Camera position
+	// camera.Target = rl.NewVector3(0.0, 0.0, 0.0)      // Camera looking at point
+	// camera.Up = rl.NewVector3(0.0, 1.0, 0.0)          // Camera up vector (rotation towards target)
+	// camera.Fovy = 45.0                                // Camera field-of-view Y
+	// camera.Projection = rl.CameraPerspective          // Camera projection type
 
-	// Define the cube parameters
-	cubePosition := raylib.NewVector3(0.0, 0.0, 0.0)
-	cubeWidth := float32(2.0)
-	cubeHeight := float32(2.0)
-	cubeLength := float32(2.0)
-	cubeColor := raylib.Red
+	// rl.SetCameraMode(camera, rl.CameraFree) // Enables built-in mouse/keyboard control
 
-	raylib.SetTargetFPS(60) // Set our game to run at 60 frames-per-second
+	// Define the c1 parameters
+	worldRef := world.GetInstance()
+	c1 := world.NewCube(0.0, 0.0, 0.0, 2.0, 2.0, 2.0, rl.Maroon)
+	worldRef.AddCube(c1)
+	c2 := world.NewCube(3.0, 0.0, 0.0, 1.0, 1.0, 1.0, rl.Maroon)
+	worldRef.AddCube(c2)
+	// cubePosition := rl.NewVector3(0.0, 0.0, 0.0)
+	// cubeWidth := float32(2.0)
+	// cubeHeight := float32(2.0)
+	// cubeLength := float32(2.0)
+	// // cubeColor := raylib.Red
+	// wireCubeColor := rl.Maroon
+
+	rl.SetTargetFPS(60) // Set our game to run at 60 frames-per-second
 
 	// yAxisX := float32(screenWidth / 2)
 
 	// Main game loop
-	for !raylib.WindowShouldClose() { // Detect window close button or ESC key
+	for !rl.WindowShouldClose() { // Detect window close button or ESC key
 		// Update
 		// You can update camera movement here if needed. Raylib provides UpdateCamera()
+		// rl.UpdateCamera(&camera, rl.CameraFirstPerson) // Update camera (simply update camera position and rotation)
 
-		if raylib.IsKeyDown(raylib.KeyRight) || raylib.IsKeyDown(raylib.KeyD) {
-			cubePosition.X += .25
-		}
-		if raylib.IsKeyDown(raylib.KeyLeft) || raylib.IsKeyDown(raylib.KeyA) {
-			cubePosition.X -= .25
-		}
-		if raylib.IsKeyDown(raylib.KeyUp) || raylib.IsKeyDown(raylib.KeyW) {
-			cubePosition.Y += .25
-		}
-		if raylib.IsKeyDown(raylib.KeyDown) || raylib.IsKeyDown(raylib.KeyS) {
-			cubePosition.Y -= .25
+		processKeyboard()
+
+		// min := rl.NewVector3(cubePosition.X-cubeWidth/2, cubePosition.Y-cubeHeight/2, cubePosition.Z-cubeLength/2)
+		// max := rl.NewVector3(cubePosition.X+cubeWidth/2, cubePosition.Y+cubeHeight/2, cubePosition.Z+cubeLength/2)
+		// cubeBBox := rl.NewBoundingBox(min, max)
+		// ray := rl.GetScreenToWorldRay(rl.GetMousePosition(), *cameraRef)
+		// if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+		// 	collision := rl.GetRayCollisionBox(ray, cubeBBox)
+		// 	if collision.Hit {
+		// 		wireCubeColor = rl.Green
+		// 	} else {
+		// 		wireCubeColor = rl.Maroon
+		// 	}
+		// }
+
+		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+			ray := rl.GetScreenToWorldRay(rl.GetMousePosition(), *cameraRef)
+			for _, cube := range worldRef.Cubes {
+				collision := cube.GetBoundingBoxRayCollision(ray)
+				if collision.Hit {
+					cube.Color = rl.Green
+					cube.IsSelected = true
+				} else {
+					cube.Color = rl.Maroon
+					cube.IsSelected = false
+				}
+			}
+			// collision := c1.GetBoundingBoxRayCollision(ray)
+			// if collision.Hit {
+			// 	c1.Color = rl.Green
+			// } else {
+			// 	c1.Color = rl.Maroon
+			// }
 		}
 
 		// Draw
-		raylib.BeginDrawing()
+		rl.BeginDrawing()
 
-		raylib.ClearBackground(raylib.RayWhite) // Clear the background with a color
+		rl.ClearBackground(rl.RayWhite) // Clear the background with a color
 
-		raylib.BeginMode3D(camera) // Start 3D mode
+		rl.BeginMode3D(*cameraRef) // Start 3D mode
 
 		// Draw the cube
-		raylib.DrawCube(cubePosition, cubeWidth, cubeHeight, cubeLength, cubeColor)
+		// raylib.DrawCube(cubePosition, cubeWidth, cubeHeight, cubeLength, cubeColor)
 		// Optional: Draw the cube wires to see the edges clearly
-		raylib.DrawCubeWires(cubePosition, cubeWidth, cubeHeight, cubeLength, raylib.Maroon)
+		// rl.DrawCubeWires(cubePosition, cubeWidth, cubeHeight, cubeLength, wireCubeColor)
+		for _, cube := range worldRef.Cubes {
+			cube.Draw()
+		}
 
 		// Optional: Draw a grid to visualize the 3D space
-		raylib.DrawGrid(10, 1.0)
+		rl.DrawGrid(10, 1.0)
 
-		// Draws a thick blue line vertically down the center
-		// raylib.DrawLineEx(
-		// 	raylib.Vector2{X: yAxisX, Y: 0},
-		// 	raylib.Vector2{X: yAxisX, Y: float32(screenHeight)},
-		// 	4.0, // Thickness
-		// 	raylib.Blue,
-		// )
-		raylib.DrawLine3D(
-			raylib.NewVector3(0, 0, 0),
-			raylib.NewVector3(0, 5, 0),
-			raylib.Green,
+		rl.DrawLine3D(
+			rl.NewVector3(0, 0, 0),
+			rl.NewVector3(0, 5, 0),
+			rl.Green,
 		)
 
-		raylib.EndMode3D() // End 3D mode
+		rl.EndMode3D() // End 3D mode
 
-		raylib.DrawFPS(10, 10) // Draw FPS counter in the corner
+		rl.DrawFPS(10, 10) // Draw FPS counter in the corner
 
-		raylib.EndDrawing()
+		rl.EndDrawing()
 	}
 
 	// De-initialization
-	raylib.CloseWindow() // Close window and OpenGL context
+	rl.CloseWindow() // Close window and OpenGL context
+}
+
+func processKeyboard() {
+	// cubePosition *rl.Vector3, //camera *rl.Camera3D,
+	// cubewidth *float32, cubeHeight *float32, cubeLength *float32) {
+
+	cameraRef := camera.GetInstance()
+
+	if rl.IsKeyDown(rl.KeyK) {
+		cameraRef.Position.X += .25
+	}
+	if rl.IsKeyDown(rl.KeyJ) {
+		cameraRef.Position.X -= .25
+	}
+
+	var cube *world.Cube = nil
+	worldRef := world.GetInstance()
+	for _, c := range worldRef.Cubes {
+		if c.IsSelected {
+			cube = c
+			break
+		}
+	}
+
+	if cube == nil {
+		return
+	}
+
+	if rl.IsKeyDown(rl.KeyRight) {
+		cube.PositionX += .25
+	}
+	if rl.IsKeyDown(rl.KeyLeft) {
+		cube.PositionX -= .25
+	}
+	if rl.IsKeyDown(rl.KeyUp) {
+		cube.PositionY += .25
+	}
+	if rl.IsKeyDown(rl.KeyDown) {
+		cube.PositionY -= .25
+	}
+
+	if rl.IsKeyDown(rl.KeyEqual) && (rl.IsKeyDown(rl.KeyLeftShift) || rl.IsKeyDown(rl.KeyRightShift)) {
+		// Plus sign pressed
+		cube.Width += .25
+		cube.Height += .25
+		cube.Length += .25
+	}
+	if rl.IsKeyDown(rl.KeyMinus) {
+		cube.Width -= .25
+		cube.Height -= .25
+		cube.Length -= .25
+	}
+
 }
