@@ -18,42 +18,38 @@ func ProcessKeyboard() {
 	}
 
 	// Handle cube manipulation
-	var cube *world.Cube = nil
+	var shape world.Shape = nil
 	worldRef := world.GetInstance()
-	for _, c := range worldRef.Cubes {
-		if c.IsSelected {
-			cube = c
+	for _, s := range worldRef.Shapes {
+		if s.GetSelected() {
+			shape = s
 			break
 		}
 	}
 
-	if cube == nil {
+	if shape == nil {
 		return
 	}
 
 	if rl.IsKeyDown(rl.KeyRight) {
-		cube.PositionX += .25
+		shape.Move(rl.NewVector3(.25, 0, 0))
 	}
 	if rl.IsKeyDown(rl.KeyLeft) {
-		cube.PositionX -= .25
+		shape.Move(rl.NewVector3(-.25, 0, 0))
 	}
 	if rl.IsKeyDown(rl.KeyUp) {
-		cube.PositionY += .25
+		shape.Move(rl.NewVector3(0, .25, 0))
 	}
 	if rl.IsKeyDown(rl.KeyDown) {
-		cube.PositionY -= .25
+		shape.Move(rl.NewVector3(0, -.25, 0))
 	}
 
 	if rl.IsKeyDown(rl.KeyEqual) && (rl.IsKeyDown(rl.KeyLeftShift) || rl.IsKeyDown(rl.KeyRightShift)) {
 		// Plus sign pressed
-		cube.Width += .25
-		cube.Height += .25
-		cube.Length += .25
+		shape.Grow(1.1)
 	}
 	if rl.IsKeyDown(rl.KeyMinus) {
-		cube.Width -= .25
-		cube.Height -= .25
-		cube.Length -= .25
+		shape.Grow(1.0 / 1.1)
 	}
 
 }

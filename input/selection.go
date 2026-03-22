@@ -14,14 +14,14 @@ func SetSelectedObjects() {
 	if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
 		ray := rl.GetScreenToWorldRay(rl.GetMousePosition(), *cameraRef)
 
-		for _, cube := range worldRef.Cubes {
-			collision := cube.GetBoundingBoxRayCollision(ray)
+		for _, shape := range worldRef.Shapes {
+			collision := shape.GetBoundingBoxRayCollision(ray)
 			if collision.Hit {
-				cube.Color = rl.Green
-				cube.IsSelected = true
+				shape.SetColor(rl.Green)
+				shape.SetSelected(true)
 			} else {
-				cube.Color = rl.Maroon
-				cube.IsSelected = false
+				shape.SetColor(rl.Maroon)
+				shape.SetSelected(false)
 			}
 		}
 	}
