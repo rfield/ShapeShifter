@@ -5,12 +5,12 @@ import rl "github.com/gen2brain/raylib-go/raylib"
 var world World
 
 type World struct {
-	Cubes []*Cube
+	Shapes []Shape
 }
 
 func init() {
 	world = World{
-		Cubes: []*Cube{},
+		Shapes: []Shape{},
 	}
 }
 
@@ -18,13 +18,13 @@ func GetInstance() *World {
 	return &world
 }
 
-func (w *World) AddShape(cube *Cube) {
-	w.Cubes = append(w.Cubes, cube)
+func (w *World) AddShape(shape Shape) {
+	w.Shapes = append(w.Shapes, shape)
 }
 
 func (w *World) Draw() {
-	for _, shape := range w.Cubes {
-		(*shape).Draw()
+	for _, shape := range w.Shapes {
+		shape.Draw()
 	}
 }
 

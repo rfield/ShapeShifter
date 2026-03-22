@@ -41,6 +41,30 @@ func (c *Cube) Draw() {
 	}
 }
 
+func (c *Cube) Move(delta rl.Vector3) {
+	c.PositionX += delta.X
+	c.PositionY += delta.Y
+	c.PositionZ += delta.Z
+}
+
+func (c *Cube) Grow(factor float32) {
+	c.Width *= factor
+	c.Height *= factor
+	c.Length *= factor
+}
+
+func (c *Cube) SetColor(color rl.Color) {
+	c.Color = color
+}
+
+func (c *Cube) SetSelected(isSelected bool) {
+	c.IsSelected = isSelected
+}
+
+func (c *Cube) GetSelected() bool {
+	return c.IsSelected
+}
+
 func (c *Cube) GetBoundingBox() (min, max rl.Vector3) {
 	min = rl.NewVector3(c.PositionX-c.Width/2, c.PositionY-c.Height/2, c.PositionZ-c.Length/2)
 	max = rl.NewVector3(c.PositionX+c.Width/2, c.PositionY+c.Height/2, c.PositionZ+c.Length/2)
