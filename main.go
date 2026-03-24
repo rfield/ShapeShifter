@@ -32,19 +32,19 @@ func main() {
 
 		//rl.UpdateCamera(cameraRef, rl.CameraFirstPerson)
 
-		input.ProcessKeyboard()
+		worldRef.DumpInfo()
 
+		input.ProcessKeyboard()
 		input.SetSelectedObjects()
+		input.DragSelectedObjects()
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
 
-		rl.BeginMode3D(*cameraRef) // Start 3D mode
+		rl.BeginMode3D(*cameraRef)
 		worldRef.DrawGrid()
 		worldRef.Draw()
-		rl.EndMode3D() // End 3D mode
-
-		rl.DrawFPS(10, 10) // Draw FPS counter in the corner
+		rl.EndMode3D()
 
 		rl.EndDrawing()
 	}

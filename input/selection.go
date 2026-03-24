@@ -26,3 +26,23 @@ func SetSelectedObjects() {
 		}
 	}
 }
+
+func DragSelectedObjects() {
+	cameraRef := camera.GetInstance()
+	worldRef := world.GetInstance()
+
+	if rl.IsMouseButtonDown(rl.MouseLeftButton) {
+		ray := rl.GetScreenToWorldRay(rl.GetMousePosition(), *cameraRef)
+
+		for _, shape := range worldRef.Shapes {
+
+			collision := shape.GetBoundingBoxRayCollision(ray)
+
+			if collision.Hit {
+				distance := collision.Distance
+				newPos := rl.Vector3Add(ray.Position, rl.Vector3Scale(ray.Direction, distance))
+				shape.SetPosition(newPos)
+			}
+		}
+	}
+}

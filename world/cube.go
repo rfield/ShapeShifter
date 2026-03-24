@@ -41,6 +41,16 @@ func (c *Cube) Draw() {
 	}
 }
 
+func (c *Cube) GetPosition() rl.Vector3 {
+	return rl.NewVector3(c.PositionX, c.PositionY, c.PositionZ)
+}
+
+func (c *Cube) SetPosition(pos rl.Vector3) {
+	c.PositionX = pos.X
+	c.PositionY = pos.Y
+	// c.PositionZ = pos.Z
+}
+
 func (c *Cube) Move(delta rl.Vector3) {
 	c.PositionX += delta.X
 	c.PositionY += delta.Y
@@ -51,6 +61,10 @@ func (c *Cube) Grow(factor float32) {
 	c.Width *= factor
 	c.Height *= factor
 	c.Length *= factor
+}
+
+func (c *Cube) GetShapeType() string {
+	return "Cube"
 }
 
 func (c *Cube) SetColor(color rl.Color) {
