@@ -24,6 +24,8 @@ func main() {
 	worldRef.AddShape(c1)
 	c2 := world.NewCube(3.0, 0.0, 0.0, 1.0, 1.0, 1.0, rl.Maroon)
 	worldRef.AddShape(c2)
+	s1 := world.NewSphere(rl.Vector3{X: -3.0, Y: 0.0, Z: 0.0}, 1.0, rl.Blue)
+	worldRef.AddShape(s1)
 
 	rl.SetTargetFPS(60) // Set our game to run at 60 frames-per-second
 
