@@ -16,8 +16,20 @@ func ProcessKeyboard() {
 	if rl.IsKeyDown(rl.KeyJ) {
 		cameraRef.Position.X -= .25
 	}
+	if rl.IsKeyDown(rl.KeyI) {
+		cameraRef.Position.Y += .25
+	}
+	if rl.IsKeyDown(rl.KeyU) {
+		cameraRef.Position.Y -= .25
+	}
+	if rl.IsKeyDown(rl.KeyN) {
+		cameraRef.Position.Z += .25
+	}
+	if rl.IsKeyDown(rl.KeyM) {
+		cameraRef.Position.Z -= .25
+	}
 
-	// Handle cube manipulation
+	// Handle shape selection and manipulation
 	var shape world.Shape = nil
 	worldRef := world.GetInstance()
 	for _, s := range worldRef.Shapes {
@@ -26,11 +38,11 @@ func ProcessKeyboard() {
 			break
 		}
 	}
-
 	if shape == nil {
 		return
 	}
 
+	// Arrow keys to move the shape along the X and Y axes
 	if rl.IsKeyDown(rl.KeyRight) {
 		shape.Move(rl.NewVector3(.25, 0, 0))
 	}
@@ -44,8 +56,8 @@ func ProcessKeyboard() {
 		shape.Move(rl.NewVector3(0, -.25, 0))
 	}
 
+	// Plus and minus keys to grow and shrink by 10%
 	if rl.IsKeyDown(rl.KeyEqual) && (rl.IsKeyDown(rl.KeyLeftShift) || rl.IsKeyDown(rl.KeyRightShift)) {
-		// Plus sign pressed
 		shape.Grow(1.1)
 	}
 	if rl.IsKeyDown(rl.KeyMinus) {
