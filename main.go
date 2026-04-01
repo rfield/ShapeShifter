@@ -21,6 +21,10 @@ func main() {
 	worldRef := world.GetInstance()
 	worldRef.CreateDefaultShapes()
 
+	// Rotating cube
+	model := rl.LoadModelFromMesh(rl.GenMeshCube(1.0, 1.0, 1.0))
+	rotation := 0.0
+
 	rl.SetTargetFPS(60) // Set our game to run at 60 frames-per-second
 
 	// Main game loop
@@ -34,12 +38,27 @@ func main() {
 		input.SetSelectedObjects()
 		input.DragSelectedObjects()
 
+		rotation += 1.0
+
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
 
 		rl.BeginMode3D(*cameraRef)
 		worldRef.DrawGrid()
 		worldRef.Draw()
+
+		// Draw the rotating cube
+		// TO DO - make part of the world and add to the list of objects to draw
+		// TO DO - figure out why it's NOT selectable
+		rl.DrawModelEx(
+			model,
+			rl.NewVector3(-3.0, 2.0, -2.0), // Position
+			rl.NewVector3(0.0, 1.0, 0.0),   // Rotation axis (Y-axis for spinning like a top)
+			float32(rotation),              // Rotation angle
+			rl.NewVector3(1.0, 1.0, 1.0),   // Scale
+			rl.Gray,                        // Tint color
+		)
+
 		rl.EndMode3D()
 
 		ui.ShowDialogOrButton()
